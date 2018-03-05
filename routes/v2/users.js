@@ -3,11 +3,14 @@
 
 var Users = require.main.require('./src/user'),
 	Messaging = require.main.require('./src/messaging'),
+	uploadController = require.main.require('./src/controllers/uploads'),
 	apiMiddleware = require('./middleware'),
 	errorHandler = require('../../lib/errorHandler'),
 	auth = require('../../lib/auth'),
 	utils = require('./utils'),
-	async = require.main.require('async');
+	async = require.main.require('async'),
+	multipart = require.main.require('connect-multiparty'),
+	meta = require.main.require('./src/meta');
 
 
 module.exports = function(/*middleware*/) {
@@ -24,6 +27,20 @@ module.exports = function(/*middleware*/) {
 			});
 		});
 	});
+
+	app.route('/:uid/profilePicture')
+		.post(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, multipart(), function(req, res, next) {
+			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
+				return errorHandler.respond(401, res);
+			}
+
+			var userPhoto = req.files.files[0];
+			req.body.uid = req.params.uid;
+
+			Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
+				return errorHandler.handle(err, res);
+			});
+		});
 
 	app.route('/:uid')
 		.put(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
