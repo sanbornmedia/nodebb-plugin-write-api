@@ -31,16 +31,12 @@ module.exports = function(/*middleware*/) {
 	app.route('/:uid/profile-picture')
 		.post(apiMiddleware.requireUser, apiMiddleware.exposeAdmin, multipart(), function(req, res, next) {
 			if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
-				console.log('>>> failed admin check');
 				return errorHandler.respond(401, res);
 			}
 
 			var userPhoto = req.files.files[0];
 			req.body.uid = req.params.uid;
-			console.log('>>> userPhoto', userPhoto, req.params.uid, req.body.uid, req.user.uid);
 			Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
-				console.log('>>> error', err);
-				console.log('>>> result', result);
 				return errorHandler.handle(err, res);
 			});
 		});
