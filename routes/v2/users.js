@@ -37,7 +37,7 @@ module.exports = function(/*middleware*/) {
 			var userPhoto = req.files.files[0];
 			req.body.uid = req.params.uid;
 			Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
-				return errorHandler.handle(err, res);
+				return errorHandler.handle(err, res, result);
 			});
 		});
 
