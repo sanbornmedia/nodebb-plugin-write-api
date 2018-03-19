@@ -87,6 +87,19 @@ module.exports = function(/*middleware*/) {
 		});
 	});
 
+	app.put('/:uid/subscription', apiMiddleware.requireUser, apiMiddleware.exposeAdmin, function(req, res) {
+		if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10) && !res.locals.isAdmin) {
+			return errorHandler.respond(401, res);
+		}
+
+		Users.getSettings(req.params.uid, function (err, settings) {
+			settings.dailyDigestFreq = req.body['frequency'] || 'off';
+			Users.saveSettings(req.params.uid, settings, function (err, results) {
+				return errorHandler.handle(err, res);
+			});
+		});
+	});
+
 	app.put('/:uid/follow', apiMiddleware.requireUser, function(req, res) {
 		Users.follow(req.user.uid, req.params.uid, function(err) {
 			return errorHandler.handle(err, res);
