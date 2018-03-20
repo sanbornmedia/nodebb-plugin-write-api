@@ -34,11 +34,18 @@ module.exports = function(/*middleware*/) {
 				return errorHandler.respond(401, res);
 			}
 
-			var userPhoto = req.files.files[0];
 			req.body.uid = req.params.uid;
-			Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
-				return errorHandler.handle(err, res, result);
-			});
+			
+			if (req.files && req.files.files[0]) {
+				var userPhoto = req.files.files[0];
+				Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
+					return errorHandler.handle(err, res, result);
+				});
+			} else {
+				Users.setUserFields(req.params.uid, {uploadedpicture: '', picture: ''}, function (err, result) {
+					return errorHandler.handle(err, res, result);
+				});
+			}
 		});
 
 	app.route('/:uid')
