@@ -36,7 +36,7 @@ module.exports = function(/*middleware*/) {
 
 			req.body.uid = req.params.uid;
 			
-			if (req.files.files && req.files.files[0]) {
+			if (req.files && req.files.files && req.files.files[0]) {
 				var userPhoto = req.files.files[0];
 				Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
 					return errorHandler.handle(err, res, result);
