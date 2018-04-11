@@ -6,6 +6,7 @@ var Users = require.main.require('./src/user'),
 	uploadController = require.main.require('./src/controllers/uploads'),
 	apiMiddleware = require('./middleware'),
 	errorHandler = require('../../lib/errorHandler'),
+	editController = require.main.require('./src/controllers/accounts/edit'),
 	auth = require('../../lib/auth'),
 	utils = require('./utils'),
 	async = require.main.require('async'),
@@ -38,7 +39,7 @@ module.exports = function(/*middleware*/) {
 			
 			if (req.files.files && req.files.files[0]) {
 				var userPhoto = req.files.files[0];
-				Users.uploadPicture(req.params.uid, userPhoto, function(err, result) {
+				editController.uploadPicture(req, res, function(err, result) {
 					return errorHandler.handle(err, res, result);
 				});
 			} else {
