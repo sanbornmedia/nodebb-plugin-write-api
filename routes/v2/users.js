@@ -36,6 +36,7 @@ module.exports = function(/*middleware*/) {
 			}
 
 			req.body.uid = req.params.uid;
+			req.params.userslug = req.params.uid;
 			
 			if (req.files.files && req.files.files[0]) {
 				var userPhoto = req.files.files[0];
