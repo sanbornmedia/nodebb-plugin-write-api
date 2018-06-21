@@ -44,8 +44,10 @@ module.exports = function(/*middleware*/) {
 					return errorHandler.handle(err, res, result);
 				});
 			} else {
-				Users.setUserFields(req.params.uid, {uploadedpicture: '', picture: ''}, function (err, result) {
-					return errorHandler.handle(err, res, result);
+				Users.getUidByUsername(req.params.uid, function (err, uid) {
+					Users.setUserFields(uid, {uploadedpicture: '', picture: ''}, function (err, result) {
+						return errorHandler.handle(err, res, result);
+					});
 				});
 			}
 		});
